@@ -7,7 +7,7 @@ argument-hint: element or coordinates to tap
 
 Default to semantic tapping:
 
-1. If the target is described by text, resource-id, or content description, run `./tools/android input tap-element ... --json`.
+1. If the target is described by text, resource-id, or content description, run `./tools/android input tap-element ... --json`. Use `--by any` unless you already know which field the app uses — icon-only controls often expose only `content-desc`, so `--by text` can miss them.
 2. If the user gave coordinates, run `./tools/android input tap --x ... --y ... --json`.
 3. After tapping, verify the result with `./tools/android ui dump --json` or `./tools/android wait element ... --json`.
 

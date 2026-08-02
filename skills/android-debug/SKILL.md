@@ -8,7 +8,7 @@ argument-hint: issue to investigate
 Debugging workflow:
 
 1. Collect context with `./tools/android device info --json`, `./tools/android app current --json`, and `./tools/android screenshot --json`.
-2. If reproducing a bug, clear logs first with `./tools/android debug clear-logs --json`.
+2. If reproducing a bug, clear logs first with `./tools/android debug clear-logs --json`. To reproduce from a clean app state, use `./tools/android app clear --package <pkg> --json` before relaunching.
 3. Collect logs with `./tools/android debug logs --json`, adding `--package` and `--level` when relevant.
 4. Correlate the logs with the current screen and the user's report.
 5. Report:

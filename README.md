@@ -39,7 +39,7 @@ Compared with a pure markdown skill pack, this structure is better because:
 ## Prerequisites
 
 - Android SDK with `adb` on your PATH or `ANDROID_HOME` set
-- `python3` on your PATH
+- `python3` on your PATH (`python` on Windows)
 - A connected Android device or running emulator
 
 Quick check:
@@ -47,6 +47,16 @@ Quick check:
 ```bash
 ./tools/android device list --json
 ```
+
+On Windows, use the bundled shim instead:
+
+```powershell
+tools\android.cmd device list --json
+```
+
+SDK discovery checks `ANDROID_HOME`/`ANDROID_SDK_ROOT`, then the default install
+locations on macOS (`~/Library/Android/sdk`), Linux (`~/Android/Sdk`), and Windows
+(`%LOCALAPPDATA%\Android\Sdk`).
 
 ## Installation
 
@@ -94,6 +104,8 @@ Examples:
 
 ```bash
 ./tools/android device list --json
+./tools/android connect wifi --json
+./tools/android connect tailscale --host my-phone --json
 ./tools/android screenshot --out /tmp/screen.png --json
 ./tools/android ui dump --json
 ./tools/android ui find --by text --value "Login" --json
@@ -125,7 +137,7 @@ python3 -m unittest discover -s tests -v
 
 CI runs the same suite on every push and pull request via [`.github/workflows/test.yml`](.github/workflows/test.yml).
 
-The tests use fake `adb` and `emulator` binaries, so they do not require a real Android SDK or device on the CI runner.
+The tests use fake `adb` and `emulator` binaries, so they do not require a real Android SDK or device on the CI runner. The fakes are POSIX shebang scripts, so on Windows the integration tests skip automatically and only the unit tests run; CI covers the full suite.
 
 ## Skills
 
@@ -142,6 +154,7 @@ The tests use fake `adb` and `emulator` binaries, so they do not require a real 
 | `android-debug` | Collect logs and diagnose failures |
 | `android-install` | Install and launch an APK |
 | `android-device` | Device and emulator management |
+| `android-connect` | Connect over Wi-Fi debugging or Tailscale |
 
 ## Example Usage
 
@@ -174,7 +187,8 @@ android-adb-skill/
 │   ├── android-test/SKILL.md
 │   ├── android-debug/SKILL.md
 │   ├── android-install/SKILL.md
-│   └── android-device/SKILL.md
+│   ├── android-device/SKILL.md
+│   └── android-connect/SKILL.md
 ├── AGENTS.md
 ├── CLAUDE.md
 ├── .cursor/rules/android-adb.mdc

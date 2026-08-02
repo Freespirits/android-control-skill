@@ -28,3 +28,4 @@ Read [`docs/command-contract.md`](docs/command-contract.md) for the supported co
 - `skills/android-debug/SKILL.md` — Debugging
 - `skills/android-install/SKILL.md` — APK installation
 - `skills/android-device/SKILL.md` — Device management
+- `skills/android-connect/SKILL.md` — Wi-Fi / Tailscale connectivity

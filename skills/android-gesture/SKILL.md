@@ -8,9 +8,9 @@ argument-hint: gesture to perform
 Map requests to command-layer actions:
 
 - tap: `input tap`
-- long press: `input swipe` from a point to itself with a long duration
+- long press: `input long-press` (default 600ms, tune with `--duration`)
 - swipe / drag: `input swipe`
-- double tap: run two `input tap` commands in sequence and then verify
+- double tap: `input double-tap` (tune tap spacing with `--gap`)
 
 If the user names an element instead of coordinates, resolve it first with `ui find` or `input tap-element`.
 

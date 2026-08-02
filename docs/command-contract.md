@@ -8,6 +8,8 @@ This repo now centers on one executable interface:
 
 Skills and agent adapters should prefer this command surface over raw `adb` calls. Fall back to raw `adb` only when a needed operation is not implemented yet.
 
+On Windows, invoke it as `tools\android.cmd ...` (or `python tools/android ...`); the examples below use the POSIX form.
+
 ## Design Rules
 
 - Prefer `--json` for machine-readable output.
@@ -26,6 +28,31 @@ Skills and agent adapters should prefer this command surface over raw `adb` call
 ./tools/android device start-emulator --avd-name Pixel_9 --json
 ```
 
+### Connect (Wi-Fi / Tailscale)
+
+```bash
+./tools/android connect wifi --json
+./tools/android connect ip --host 192.168.1.42 --json
+./tools/android connect tailscale --host my-phone --json
+./tools/android connect pair --host 192.168.1.42 --port 37123 --code 123456 --json
+./tools/android connect disconnect --host 192.168.1.42 --json
+./tools/android connect disconnect --json
+```
+
+- `connect wifi` needs the device on USB once: it reads the phone's Wi-Fi IP, switches
+  adbd to TCP mode (`adb tcpip`), and connects. Afterwards the cable can be unplugged.
+- `connect pair` covers Android 11+ Wireless debugging (Settings → Developer options →
+  Wireless debugging → Pair device with pairing code); follow it with `connect ip` using
+  the connect port shown on the device.
+- `connect tailscale` accepts a Tailscale machine name (resolved through the `tailscale`
+  CLI) or a `100.x` IP. The phone must be running the Tailscale app on the same tailnet
+  and adbd must already listen on TCP (run `connect wifi` once while on USB).
+- While USB stays plugged in, the same phone appears twice in `device list`; pass
+  `--device <ip:port>` (or unplug the cable) for later commands.
+- `device list --json` reports a `connection` field: `usb`, `tcp`, or `emulator`.
+- Security: TCP adb stays enabled until reboot or `adb usb`. Only enable it on trusted
+  networks; a Tailscale tailnet is fine, open Wi-Fi is not.
+
 ### Screenshots
 
 ```bash
@@ -38,7 +65,12 @@ Skills and agent adapters should prefer this command surface over raw `adb` call
 ./tools/android ui dump --json
 ./tools/android ui find --by text --value "Login" --json
 ./tools/android ui find --by resource-id --value btn_login --json
+./tools/android ui find --by any --value "Alarm" --json
 ```
+
+Selectors: `resource-id`, `text`, `content-desc`, or `any` (matches all three).
+Prefer `any` when you have not inspected the UI yet — icon-only controls
+frequently expose only `content-desc`, so a `text` selector silently misses them.
 
 ### Input
 
@@ -48,7 +80,13 @@ Skills and agent adapters should prefer this command surface over raw `adb` call
 ./tools/android input text --text "user@example.com" --json
 ./tools/android input key --key back --json
 ./tools/android input swipe --x1 540 --y1 1800 --x2 540 --y2 600 --duration 300 --json
+./tools/android input long-press --x 540 --y 1600 --duration 600 --json
+./tools/android input double-tap --x 540 --y 1600 --gap 100 --json
 ```
+
+`input text` only supports ASCII. The command fails fast for non-ASCII text and for a
+literal `%s` (which Android's `input text` always converts to a space) instead of
+sending corrupted input to the device.
 
 ### Wait / Scroll
 
@@ -63,7 +101,12 @@ Skills and agent adapters should prefer this command surface over raw `adb` call
 ./tools/android app install --apk ./app/build/outputs/apk/debug/app-debug.apk --json
 ./tools/android app launch --package com.example.app --json
 ./tools/android app current --json
+./tools/android app stop --package com.example.app --json
+./tools/android app clear --package com.example.app --json
 ```
+
+`app stop` force-stops the app. `app clear` wipes app data and force-stops it —
+useful for reproducing bugs from a clean state before `app launch`.
 
 ### Debug
 
