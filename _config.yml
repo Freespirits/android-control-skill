@@ -1,0 +1,10 @@
+title: Android ADB Skill
+description: >-
+  Control real Android phones and emulators from AI coding agents.
+  Agent skills on top of a tested adb command layer. No MCP server required.
+url: "https://freespirits.github.io"
+baseurl: "/android-control-skill"
+theme: jekyll-theme-primer
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
