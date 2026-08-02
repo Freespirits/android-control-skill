@@ -10,8 +10,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Freespirits/android-adb-skill/actions/workflows/test.yml">
-    <img src="https://github.com/Freespirits/android-adb-skill/actions/workflows/test.yml/badge.svg" alt="Test">
+  <a href="https://github.com/Freespirits/android-control-skill/actions/workflows/test.yml">
+    <img src="https://github.com/Freespirits/android-control-skill/actions/workflows/test.yml/badge.svg" alt="Test">
   </a>
 </p>
 
@@ -176,7 +176,7 @@ the unit tests run; CI covers the full suite.
 ## Repo structure
 
 ```text
-android-adb-skill/
+android-control-skill/
 ├── tools/
 │   ├── android              # the command layer (single-file Python CLI)
 │   └── android.cmd          # Windows shim
