@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>Control real Android phones and emulators from AI coding agents.</b><br>
-  Skill-driven orchestration over a deterministic, tested command layer — no MCP server required.
+  Agent skills on top of a tested adb command layer. No MCP server required.
 </p>
 
 <p align="center">
@@ -23,39 +23,40 @@
 
 ## What is this?
 
-Two thin layers that turn any coding agent into an Android operator:
+Two layers that let a coding agent drive an Android device:
 
-- **`./tools/android`** — a single Python executable that wraps `adb` with a stable,
-  JSON-first command surface: screenshots, UI inspection, element targeting, gestures,
-  waits, app lifecycle, logs, and network connectivity.
-- **`skills/*/SKILL.md`** — short task workflows that tell the agent how to compose
-  those commands (navigate, test, debug, install, connect, …).
+- `./tools/android`, a single Python file that wraps `adb` with a stable, JSON-first
+  command surface: screenshots, UI inspection, element targeting, gestures, waits,
+  app lifecycle, logs, and network connectivity.
+- `skills/*/SKILL.md`, short task workflows that tell the agent how to compose those
+  commands for navigation, testing, debugging, and installs.
 
-The agent stays high-level; the runtime contract stays deterministic and testable.
+The agent works at the task level. The commands stay deterministic and testable.
 
-## Highlights
+## Features
 
-- **`--json` everywhere** — agents reason over structured output, never scraped prose.
-- **Semantic targeting** — find, tap, wait, and scroll by `resource-id`, `text`,
-  `content-desc`, or `any`; smart ranking prefers the real control over clipped
-  layout containers.
-- **Wi-Fi & Tailscale control** — `connect wifi` flips a USB phone to network adb in
-  one command; `connect tailscale` reaches it from anywhere on your tailnet.
-- **Battle-tested on real hardware** — verified on a Galaxy Z Fold6 (Android 16):
-  multi-display screenshot quirks, slow UI dumps, icon-only navigation rails, and
-  Samsung's uiautomator output format are all handled.
-- **Cross-platform** — Linux, macOS, and Windows (`tools\android.cmd` shim, SDK
-  discovery under `%LOCALAPPDATA%`, `.exe`/`.bat` resolution).
-- **CI-backed** — the whole command layer is tested against fake `adb`/`emulator`
-  binaries; no device needed on the runner.
+- Every command takes `--json`, so agents parse structured output instead of
+  scraping prose.
+- Find, tap, wait, and scroll by `resource-id`, `text`, `content-desc`, or `any`.
+  Ranking prefers the smallest matching element, so taps land on the visible
+  control instead of a clipped parent container.
+- `connect wifi` switches a USB phone to network adb in one command.
+  `connect tailscale` reaches it from anywhere on your tailnet.
+- Verified on a Galaxy Z Fold6 running Android 16. The command layer handles
+  multi-display screenshot output, slow UI dumps, and icon-only navigation rails.
+- Runs on Linux, macOS, and Windows. A `tools\android.cmd` shim covers PowerShell,
+  and SDK discovery checks `%LOCALAPPDATA%\Android\Sdk` and `.exe`/`.bat` tool
+  names.
+- CI runs the test suite against fake `adb` and `emulator` binaries, so no device
+  is needed on the runner.
 
-## Why not an MCP server?
+## Why a CLI instead of an MCP server?
 
-The useful part of device automation is the *command design*, not the transport.
-A local CLI is testable, versioned with the repo, composable with ordinary shell
-logic, and needs no server lifecycle. Agents with shell access (Claude Code, Codex,
-Cursor, Copilot) get everything MCP would offer — and if you ever need MCP (shell-less
-clients, persistent sessions), wrapping this CLI in one is trivial.
+The hard part of device automation is the command design, and a CLI carries it
+better here: it is testable, versioned with the repo, and composable with ordinary
+shell logic. Agents with shell access (Claude Code, Codex, Cursor, Copilot) call it
+directly. If you later need MCP for a shell-less client, each tool can wrap one CLI
+command.
 
 ## Prerequisites
 
@@ -73,16 +74,16 @@ clients, persistent sessions), wrapping this CLI in one is trivial.
 tools\android.cmd device list --json
 ```
 
-SDK discovery checks `ANDROID_HOME`/`ANDROID_SDK_ROOT`, then the default install
-locations on macOS (`~/Library/Android/sdk`), Linux (`~/Android/Sdk`), and Windows
-(`%LOCALAPPDATA%\Android\Sdk`).
+SDK discovery checks `ANDROID_HOME` and `ANDROID_SDK_ROOT`, then the default
+install locations on macOS (`~/Library/Android/sdk`), Linux (`~/Android/Sdk`), and
+Windows (`%LOCALAPPDATA%\Android\Sdk`).
 
 ## Command tour
 
 ```bash
 # Devices & connectivity
 ./tools/android device list --json
-./tools/android connect wifi --json                    # USB → network adb in one step
+./tools/android connect wifi --json                    # USB to network adb in one step
 ./tools/android connect tailscale --host my-phone --json
 ./tools/android connect pair --host 192.168.1.42 --port 37123 --code 123456
 
@@ -153,9 +154,9 @@ Example usage:
 
 ## Development workflow
 
-To use this repo as part of an AI-driven Android feature/debug loop — edit, build,
-install, navigate, verify, iterate — see
-[`docs/ai-development-workflow.md`](docs/ai-development-workflow.md).
+[`docs/ai-development-workflow.md`](docs/ai-development-workflow.md) covers using
+this repo inside an Android app repo: edit, build, install, navigate, verify,
+iterate.
 
 ## Testing
 
@@ -165,9 +166,9 @@ python3 -m unittest discover -s tests -v
 
 CI runs the suite on every push via
 [`.github/workflows/test.yml`](.github/workflows/test.yml). Tests use fake
-`adb`/`emulator` binaries, so no SDK or device is required. The fakes are POSIX
-shebang scripts, so on Windows the integration tests skip automatically and only
-the unit tests run; CI covers the full suite.
+`adb` and `emulator` binaries, so no SDK or device is required. The fakes are
+POSIX shebang scripts, so on Windows the integration tests skip and the unit
+tests run; CI covers the full suite.
 
 ## Repo structure
 
@@ -189,10 +190,10 @@ android-control-skill/
 
 ## Credits
 
-- Original project by **[Amit Nayar](https://github.com/amit-nayar)** —
-  [amit-nayar/android-adb-skill](https://github.com/amit-nayar/android-adb-skill).
-  This fork builds on his command-layer design with Windows support, real-device
-  fixes, gesture/app-lifecycle commands, and Wi-Fi/Tailscale connectivity.
+Original project by [Amit Nayar](https://github.com/amit-nayar):
+[amit-nayar/android-adb-skill](https://github.com/amit-nayar/android-adb-skill).
+This fork adds Windows support, real-device fixes, gesture and app lifecycle
+commands, and Wi-Fi/Tailscale connectivity.
 
 ## License
 
