@@ -2,6 +2,10 @@ docs/research-android-mcp-server.md
 __pycache__/
 .claude/
 
+# Local-only agent tooling installed via `npx skills add` — not part of this repo
+.agents/
+skills-lock.json
+
 # Local install mirrors created by `npx skills add` (junctions into .agents/skills)
 skills/competitive-landscape/
 skills/competitor-analysis/

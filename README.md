@@ -151,10 +151,6 @@ Example usage:
 /android-debug crashes in com.example.app after tapping Settings
 ```
 
-This repo also bundles the [OpenSEO skill pack](https://github.com/every-app/open-seo)
-under `.agents/skills/` (SEO audits, keyword research, content review, and general
-code-quality helpers), installed and pinned via `skills-lock.json`.
-
 ## Development workflow
 
 To use this repo as part of an AI-driven Android feature/debug loop — edit, build,
@@ -186,7 +182,6 @@ android-control-skill/
 ├── tests/
 │   └── test_tools_android.py
 ├── skills/                  # android-* agent skills
-├── .agents/skills/          # bundled OpenSEO skill pack
 ├── assets/                  # logo & demo video
 ├── AGENTS.md · CLAUDE.md · .cursor/ · .github/
 └── README.md
@@ -198,7 +193,6 @@ android-control-skill/
   [amit-nayar/android-adb-skill](https://github.com/amit-nayar/android-adb-skill).
   This fork builds on his command-layer design with Windows support, real-device
   fixes, gesture/app-lifecycle commands, and Wi-Fi/Tailscale connectivity.
-- OpenSEO skill pack by [every-app/open-seo](https://github.com/every-app/open-seo).
 
 ## License
 
