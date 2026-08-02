@@ -1,1 +1,19 @@
 docs/research-android-mcp-server.md
+__pycache__/
+.claude/
+
+# Local install mirrors created by `npx skills add` (junctions into .agents/skills)
+skills/competitive-landscape/
+skills/competitor-analysis/
+skills/deslop/
+skills/keyword-clustering/
+skills/keyword-research/
+skills/link-prospecting/
+skills/maintain-greptile-rules/
+skills/merge-ready/
+skills/openseo-release-notes/
+skills/openseo-review-web-content/
+skills/papercuts/
+skills/seo-audit/
+skills/seo-coach/
+skills/seo-project-setup/
