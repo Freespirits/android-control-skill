@@ -1,4 +1,4 @@
-import json
+﻿import json
 import os
 import pathlib
 import subprocess
@@ -372,7 +372,7 @@ class AndroidToolTestCase(unittest.TestCase):
         self.assertEqual(payload["gapMs"], 50)
 
     def test_input_text_rejects_non_ascii(self):
-        proc = self.run_cli("input", "text", "--text", "héllo", "--json")
+        proc = self.run_cli("input", "text", "--text", "hÃ©llo", "--json")
         self.assertEqual(proc.returncode, 1)
         payload = json.loads(proc.stderr)
         self.assertIn("non-ASCII", payload["error"])
@@ -604,7 +604,7 @@ class AndroidToolUnitTestCase(unittest.TestCase):
 
     def test_validate_input_text_rejects_non_ascii(self):
         with self.assertRaises(self.module.ToolError):
-            self.module.validate_input_text("héllo")
+            self.module.validate_input_text("hÃ©llo")
 
     def test_parse_ui_xml_filters_relevant_nodes(self):
         elements = self.module.parse_ui_xml(SAMPLE_UI_XML)
